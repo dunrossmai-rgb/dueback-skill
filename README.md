@@ -10,7 +10,7 @@ Outcome-based bill negotiation for your users. You detect the opportunity; Dueba
 ## Pricing
 - **Free to try.** No verified savings = $0, always.
 - **Standard:** 20% of verified first-year recurring savings / 10% one-offs. Caps: $200 everyday / $1,000 big-ticket.
-- **ALPHA:** First 20 total negotiations are completely free ($0 fee).
+- **ALPHA:** Use code `LAUNCH20`; first 20 redemptions are completely free ($0 fee).
 
 ## Installation
 Copy this directory into your agent's skills folder, or reference it directly. See `SKILL.md` for the full workflow.
