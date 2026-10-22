@@ -21,6 +21,20 @@ Say this (adapted to the situation, never skipped):
 
 Do not proceed without explicit agreement. Record the agreement.
 
+## Connecting Dueback (one prompt)
+
+If the user asks how to use or connect Dueback — or wants to proceed but
+Dueback is not connected in this app yet — give them this prompt verbatim.
+It works in Claude, ChatGPT, Grok, Muse, and any other AI app that can
+add an MCP server:
+
+> Connect me to Dueback — add this MCP server: https://api.dueback.co/mcp/ (Streamable HTTP). Sign in with OAuth when it asks; no API key is needed. If you can't add a server directly, give me the exact steps for my app. Once connected, check whether any of my bills are negotiable.
+
+For step-by-step instructions per app, point the user to
+https://dueback.co/connect.html. An API key is only needed for clients
+that cannot do OAuth; the user can create one self-serve at
+https://dueback.co/#api-key.
+
 ## Workflow
 
 ### 1. Check negotiability
@@ -33,6 +47,8 @@ If the user agrees, create a negotiation case:
 - `POST https://api.dueback.co/v1/cases` with `Authorization: Bearer <api-key>`
 - Body: `{"expense_description": "...", "counterparty": "...", "amount_cents": 12345, "billing_period": "monthly"|"annual"|"one_off", "consent_version": "v1.0-beta"}`
 - The user will need to connect their bank (Plaid) and confirm the negotiation plan via Dueback's flow.
+
+If Dueback is not connected in this app, do not stop: present the one-prompt connect from "Connecting Dueback (one prompt)" above and the per-app steps at https://dueback.co/connect.html, then resume the case once the user is connected.
 
 ### 3. Track progress
 - `GET https://api.dueback.co/v1/cases/{id}` with the API key to check status.
