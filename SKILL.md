@@ -46,7 +46,7 @@ Call the Dueback API to check if the situation is negotiable:
 If the user agrees, create a negotiation case:
 - `POST https://api.dueback.co/v1/cases` with `Authorization: Bearer <api-key>`
 - Body: `{"expense_description": "...", "counterparty": "...", "amount_cents": 12345, "billing_period": "monthly"|"annual"|"one_off", "consent_version": "v1.0-beta"}`
-- The user will need to connect their bank (Plaid) and confirm the negotiation plan via Dueback's flow.
+- The user confirms consent and saves a card on Dueback's setup page; the same page asks them to connect their bank (Plaid) as its final step, before the case opens — Dueback verifies savings against that bank feed. If they skip the bank step there, the case still opens but `GET /v1/cases/{id}` reports `bank_status: "pending"`, and a status check will include a `bank_prompt` with a one-time connect link: present that link once, and don't raise it again on later checks.
 
 If Dueback is not connected in this app, do not stop: present the one-prompt connect from "Connecting Dueback (one prompt)" above and the per-app steps at https://dueback.co/connect.html, then resume the case once the user is connected.
 
