@@ -69,6 +69,18 @@ Never submit the prefilled values without the user's explicit publish confirmati
 ### 5. Verification
 Dueback verifies savings against bank-feed transaction data. The user pays only on verified savings (or $0 during alpha). Do not promise specific savings amounts.
 
+### 6. Savings scan (after a case completes)
+Dueback can scan the recurring charges on the user's connected bank accounts to find other bills it may be able to negotiate. When a case reaches a completed state, its `GET /v1/cases/{id}` response may include a `savings_scan` payload:
+
+- **`status: "offered"`, `fresh: true`** — the user hasn't answered the scan opt-in yet. Ask **once, at this completion moment**: one short line asking whether Dueback may scan the recurring charges on their connected bank accounts — including accounts they connect later — to find other negotiable bills. Record the answer either way: `POST https://api.dueback.co/v1/savings-scan/consent` with the API key and body `{"decision": "grant"}` or `{"decision": "decline"}`, plus `"source": "agent_chat"`. Don't ask again during this case; Dueback re-offers at the next natural moment.
+- **`status: "ready"`, `fresh: true`** — present the candidates **once, as one batched list**: merchant, current spend, and bill type for each. Never present a candidate as a promised saving. Ask which, if any, the user wants Dueback to negotiate.
+- **`status: "pending"`** — the user opted in and the scan hasn't produced findings yet. Mention in one line that Dueback is scanning their other recurring bills; don't invent findings.
+- **`fresh: false`** or no payload — say nothing about the scan on this check.
+
+Opening a candidate is the user's per-case approval — never open one on your own initiative. Only when the user explicitly picks a candidate: `POST https://api.dueback.co/v1/savings-scan/{candidate_id}/decision` with the API key and body `{"decision": "open"}` (the candidate's `decision_via` field has the exact path). For candidates they decline, send `{"decision": "dismiss"}` to the same path.
+
+The user can turn the scan off at any time: `POST https://api.dueback.co/v1/savings-scan/consent` with body `{"decision": "revoke"}`. Revoking stops all future scans and deletes the candidate list; cases already open are unaffected.
+
 ## Getting an API key
 Alpha users can request a free API key at https://dueback.co (or contact support@dueback.co). The first 20 negotiations are free.
 
