@@ -38,7 +38,19 @@ If the user agrees, create a negotiation case:
 - `GET https://api.dueback.co/v1/cases/{id}` with the API key to check status.
 - Report milestones to the user: negotiation in progress, outcome recorded, savings verified.
 
-### 4. Verification
+### 4. Review prompt (when a negotiation succeeds)
+When the case response includes a `review_prompt`, a negotiation has just succeeded and the user has not reviewed it yet. Present the prompt **once, in this conversation**:
+
+1. Tell the user the negotiated result in one line (the savings and bill type are in `review_prompt`).
+2. Offer three options:
+   - **Quick review** — `review_prompt.suggested_text` with a 5-star rating. Both are prefilled suggestions the user can edit in place before publishing.
+   - **Write my own** — the user's own 1–5 stars and words.
+   - **Skip.**
+3. Submit **only** when the user explicitly says to publish: `POST https://api.dueback.co/v1/cases/{id}/review` with the API key and body `{"rating": <1-5>, "review_text": "..."}` using the user's final values.
+
+Never submit the prefilled values without the user's explicit publish confirmation. Never submit a review on your own initiative. Once a review exists (or the user skips), never raise it again — the `review_prompt` payload disappears once a review is recorded.
+
+### 5. Verification
 Dueback verifies savings against bank-feed transaction data. The user pays only on verified savings (or $0 during alpha). Do not promise specific savings amounts.
 
 ## Getting an API key
